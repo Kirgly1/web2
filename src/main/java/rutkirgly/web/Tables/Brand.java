@@ -19,12 +19,12 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
-@Table(name = "Brand")
+@Table(name = "brand")
 public class Brand extends BaseEx {
     @NotBlank(message = "Brand name can't be empty")
     @Size(min = 2, max = 56, message = "Brand name be 2-56")
     private String name;
 
-    @OneToMany(mappedBy = "Brand", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
     private List<Model> models;
 }

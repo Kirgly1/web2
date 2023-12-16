@@ -35,7 +35,7 @@ public class User extends BaseEx {
     @NotNull
     private Boolean isActive;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "role_id")
     private UserRole role;
 
