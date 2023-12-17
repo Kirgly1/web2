@@ -1,6 +1,9 @@
 package rutkirgly.web.Services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import rutkirgly.web.Repositories.BrandRepository;
 import rutkirgly.web.Tables.Brand;
@@ -16,12 +19,13 @@ import java.util.stream.Collectors;
 public class BrandService implements BaseService<BrandDTO, Brand> {
     private BrandRepository brandRepository;
     private MappingUtil mappingUtil;
+    @CachePut(value = "brands", key = "#result.id")
     @Override
     public BrandDTO create(Brand brand) {
         Brand createBrand = brandRepository.save(brand);
         return mappingUtil.convertToDto(createBrand);
     }
-
+    @CachePut(value = "brands", key = "#result.id")
     @Override
     public BrandDTO update(UUID id, Brand brand) {
         Brand existingBrand = brandRepository.findById(id)
@@ -30,19 +34,19 @@ public class BrandService implements BaseService<BrandDTO, Brand> {
         Brand updateBrand = brandRepository.save(existingBrand);
         return mappingUtil.convertToDto(updateBrand);
     }
-
+    @CacheEvict(value = "brands", key = "#result.id")
     @Override
     public void delete(UUID id) {
         brandRepository.deleteById(id);
     }
-
+    @Cacheable(value = "brands", key = "#result.id")
     @Override
     public BrandDTO getById(UUID id) {
         Brand brand = brandRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Brand not found"));
         return mappingUtil.convertToDto(brand);
     }
-
+    @Cacheable(value = "brands", key = "#result.id")
     @Override
     public List<BrandDTO> getAll() {
         List<Brand> brands = brandRepository.findAll();

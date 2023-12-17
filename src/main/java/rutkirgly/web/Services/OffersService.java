@@ -6,9 +6,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import rutkirgly.web.Repositories.OffersRepository;
-import rutkirgly.web.Tables.Model;
 import rutkirgly.web.Tables.Offers;
-import rutkirgly.web.dto.ModelDTO;
 import rutkirgly.web.dto.OffersDTO;
 import rutkirgly.web.util.MappingUtil;
 

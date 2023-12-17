@@ -1,4 +1,5 @@
 package rutkirgly.web.Start;
+
 import com.github.javafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -12,8 +13,6 @@ import rutkirgly.web.constants.Category;
 import rutkirgly.web.constants.Engine;
 import rutkirgly.web.constants.Role;
 import rutkirgly.web.constants.Transmission;
-import rutkirgly.web.dto.UserDTO;
-import rutkirgly.web.dto.UserRoleDTO;
 
 import java.util.List;
 import java.util.Random;
@@ -40,10 +39,10 @@ public class DataInitializer implements CommandLineRunner {
         public void run(String... args) throws Exception {
 
             UserRole userRoleUser = new UserRole();
-            userRoleUser.setUserRole(Role.User);
+            userRoleUser.setRole(Role.ADMIN);
             userRoleService.create(userRoleUser);
             UserRole userRoleAdmin = new UserRole();
-            userRoleAdmin.setUserRole(Role.Admin);
+            userRoleAdmin.setRole(Role.USER);
             userRoleService.create(userRoleAdmin);
 
             for (int i = 0; i < 100; i++) {

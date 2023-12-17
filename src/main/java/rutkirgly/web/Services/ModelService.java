@@ -7,7 +7,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import rutkirgly.web.Repositories.BrandRepository;
 import rutkirgly.web.Repositories.ModelRepository;
-import rutkirgly.web.Tables.Brand;
 import rutkirgly.web.Tables.Model;
 import rutkirgly.web.dto.ModelDTO;
 import rutkirgly.web.util.MappingUtil;
@@ -70,7 +69,6 @@ public class ModelService implements BaseService<ModelDTO, Model> {
         return mappingUtil.convertToDto(model);
     }
     @Cacheable(value = "models", key ="#root.methodName" )
-
     @Override
     public List<ModelDTO> getAll() {
         List<Model> models = modelRepository.findAll();

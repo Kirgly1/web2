@@ -1,17 +1,19 @@
 package rutkirgly.web.Services;
 
+import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import rutkirgly.web.Repositories.UserRepository;
-import rutkirgly.web.Tables.Offers;
 import rutkirgly.web.Tables.User;
-import rutkirgly.web.dto.OffersDTO;
+import rutkirgly.web.constants.Role;
 import rutkirgly.web.dto.UserDTO;
 import rutkirgly.web.util.MappingUtil;
 
+import java.text.MessageFormat;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -20,6 +22,18 @@ import java.util.stream.Collectors;
 public class UserService implements BaseService<UserDTO, User> {
     private UserRepository userRepository;
     private MappingUtil mappingUtil;
+    private PasswordEncoder passwordEncoder;
+
+    private UserRoleService userRoleService;
+    @Autowired
+    public void setUserRoleService(UserRoleService userRoleService) {
+        this.userRoleService = userRoleService;
+    }
+
+    @Autowired
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
@@ -48,6 +62,34 @@ public class UserService implements BaseService<UserDTO, User> {
         return mappingUtil.convertToDto(updateUser);
     }
 
+    private UserDTO saveOrUpdate(UserDTO userDTO) throws EntityExistsException {
+
+        userDTO.setModified(LocalDateTime.now());
+        try {
+            return mappingUtil.convertToDto(userRepository.saveAndFlush(mappingUtil.convertToEntity(userDTO)));
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getLocalizedMessage());
+        }
+    }
+
+    public List<UserDTO> findAllByUsername(String username) {
+        return userRepository.findAllByUsername(username)
+                .stream()
+                .map(mappingUtil::convertToDto)
+                .toList();
+    }
+
+    public UserDTO registerNewUser(UserDTO userDTO) throws IllegalArgumentException {
+        if(userRepository.findAllByUsername(userDTO.getUsername()).isEmpty()) {
+            userDTO.setUserRoleDTO(userRoleService.findByRole(Role.USER));
+            userDTO.setCreated(LocalDateTime.now());
+            userDTO.setIsActive(true);
+            userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            return saveOrUpdate(userDTO);
+        } else {
+            throw new EntityExistsException(MessageFormat.format("User with username {0} already exists", userDTO.getUsername()));
+        }
+    }
 
     @Override
     public void delete(UUID id) {

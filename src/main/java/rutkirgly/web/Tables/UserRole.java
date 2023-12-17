@@ -1,23 +1,28 @@
 package rutkirgly.web.Tables;
 
-import jakarta.annotation.Nullable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import rutkirgly.web.Tables.Abastracts.BaseEntity;
 import rutkirgly.web.constants.Role;
 
+import java.util.Set;
+
+@EqualsAndHashCode(callSuper = true)
 @Entity
-@Getter
-@Setter
+@Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "UserRole")
 public class UserRole extends BaseEntity {
-    @NotNull(message = "role can't be null")
-    @Column(nullable = false)
-    private Role userRole;
+    //    @Convert(converter = RoleConverter.class)
+    @Enumerated(value = EnumType.STRING)
+    @Column
+    private Role role;
+
+    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "role", fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<User> users;
 }
