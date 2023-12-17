@@ -1,6 +1,7 @@
 package rutkirgly.web.dto;
 
 import lombok.Data;
+import rutkirgly.web.Tables.Offers;
 
 import java.util.Date;
 import java.util.UUID;

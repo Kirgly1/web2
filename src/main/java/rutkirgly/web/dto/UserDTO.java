@@ -12,7 +12,7 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private Boolean isActive;
-    private UserDTO role;
+    private UserRoleDTO role;
     private String imageUrl;
     private Date created;
     private Date modified;

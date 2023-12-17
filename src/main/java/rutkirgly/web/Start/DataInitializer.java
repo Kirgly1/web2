@@ -94,7 +94,7 @@ public class DataInitializer implements CommandLineRunner {
                     offer.setTransmission(Transmission.values()[random.nextInt(Transmission.values().length)]);
                     offer.setYear(faker.number().numberBetween(1886, 2022));
                     offer.setModel(model);
-
+                    offer.setImageUrl(imageUrl);
                     offerService.create(offer);
                 }
             }

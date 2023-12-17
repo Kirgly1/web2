@@ -7,6 +7,7 @@ import rutkirgly.web.Tables.Brand;
 import rutkirgly.web.dto.BrandDTO;
 import rutkirgly.web.util.MappingUtil;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -45,10 +46,15 @@ public class BrandService implements BaseService<BrandDTO, Brand> {
     @Override
     public List<BrandDTO> getAll() {
         List<Brand> brands = brandRepository.findAll();
-        return brands.stream()
+        List<BrandDTO> brandDTOs = brands.stream()
                 .map(mappingUtil::convertToDto)
                 .collect(Collectors.toList());
+
+        brandDTOs.sort(Comparator.comparing(BrandDTO::getName));
+
+        return brandDTOs;
     }
+
     @Autowired
     public void setBrandRepository(BrandRepository brandRepository) {
         this.brandRepository = brandRepository;
