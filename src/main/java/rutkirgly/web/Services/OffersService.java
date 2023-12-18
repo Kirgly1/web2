@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 import rutkirgly.web.Repositories.OffersRepository;
 import rutkirgly.web.Tables.Offers;
@@ -13,7 +14,7 @@ import rutkirgly.web.util.MappingUtil;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+@EnableCaching
 @Service
 public class OffersService implements BaseService<OffersDTO, Offers> {
     private OffersRepository offersRepository;

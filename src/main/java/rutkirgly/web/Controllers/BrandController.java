@@ -34,7 +34,7 @@ public class BrandController {
 
     @GetMapping("/{id}")
     public String getBrandById(@PathVariable UUID id, Principal principal, Model model) {
-        log.info("Brand  founded by id");
+        log.info("Brand founded by id");
         BrandDTO brand = brandService.getById(id);
         if (brand != null) {
             model.addAttribute("brand", brand);
@@ -45,7 +45,7 @@ public class BrandController {
     }
 
     @GetMapping("/all")
-    public String getAllBrands(Model model, Principal principal) {
+    public String getAll(Model model) {
         log.info("Show all Brands");
         List<BrandDTO> brands = brandService.getAll();
         model.addAttribute("brands", brands);

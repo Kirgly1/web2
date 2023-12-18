@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 import rutkirgly.web.Repositories.BrandRepository;
 import rutkirgly.web.Tables.Brand;
@@ -14,7 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+@EnableCaching
 @Service
 public class BrandService implements BaseService<BrandDTO, Brand> {
     private BrandRepository brandRepository;
@@ -39,14 +40,14 @@ public class BrandService implements BaseService<BrandDTO, Brand> {
     public void delete(UUID id) {
         brandRepository.deleteById(id);
     }
-    @Cacheable(value = "brands", key = "#result.id")
+    @Cacheable(value = "brands", key = "#id")
     @Override
     public BrandDTO getById(UUID id) {
         Brand brand = brandRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Brand not found"));
         return mappingUtil.convertToDto(brand);
     }
-    @Cacheable(value = "brands", key = "#result.id")
+    @Cacheable(value = "brands", key = "'allBrands'")
     @Override
     public List<BrandDTO> getAll() {
         List<Brand> brands = brandRepository.findAll();
@@ -58,6 +59,7 @@ public class BrandService implements BaseService<BrandDTO, Brand> {
 
         return brandDTOs;
     }
+
 
     @Autowired
     public void setBrandRepository(BrandRepository brandRepository) {

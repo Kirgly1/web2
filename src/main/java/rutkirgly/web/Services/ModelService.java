@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 import rutkirgly.web.Repositories.BrandRepository;
 import rutkirgly.web.Repositories.ModelRepository;
@@ -15,19 +16,23 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+@EnableCaching
 @Service
 public class ModelService implements BaseService<ModelDTO, Model> {
     private ModelRepository modelRepository;
     private MappingUtil mappingUtil;
     private BrandRepository brandRepository;
+
     @Autowired
     public void setModelRepository(ModelRepository modelRepository) {
         this.modelRepository = modelRepository;
     }
+
     @Autowired
     public void setMappingUtil(MappingUtil mappingUtil) {
         this.mappingUtil = mappingUtil;
     }
+
     @Autowired
     public void setBrandRepository(BrandRepository brandRepository) {
         this.brandRepository = brandRepository;
@@ -40,6 +45,7 @@ public class ModelService implements BaseService<ModelDTO, Model> {
         Model createModel = modelRepository.save(model);
         return mappingUtil.convertToDto(createModel);
     }
+
     @CachePut(value = "models", key = "#result.id")
     @Override
     public ModelDTO update(UUID id, Model model) {
@@ -55,6 +61,7 @@ public class ModelService implements BaseService<ModelDTO, Model> {
         Model updateModel = modelRepository.save(existingModel);
         return mappingUtil.convertToDto(updateModel);
     }
+
     @CacheEvict(value = "models", key = "#id")
     @Override
     public void delete(UUID id) {
@@ -68,7 +75,8 @@ public class ModelService implements BaseService<ModelDTO, Model> {
                 .orElseThrow(() -> new RuntimeException("Model not found"));
         return mappingUtil.convertToDto(model);
     }
-    @Cacheable(value = "models", key ="#root.methodName" )
+
+    @Cacheable(value = "models", key = "'getAll'")
     @Override
     public List<ModelDTO> getAll() {
         List<Model> models = modelRepository.findAll();
@@ -76,22 +84,17 @@ public class ModelService implements BaseService<ModelDTO, Model> {
                 .map(mappingUtil::convertToDto)
                 .collect(Collectors.toList());
     }
-    @CachePut(value = "models", key = "#result.id")
-    public List<ModelDTO> getAllByBrandId(UUID brandId){
 
+    @Cacheable(value = "models", key = "'getAllByBrandId_' + #brandId")
+    public List<ModelDTO> getAllByBrandId(UUID brandId) {
         List<ModelDTO> models = modelRepository.findAllByBrandId(brandId).stream()
                 .map(mappingUtil::convertToDto)
                 .collect(Collectors.toList());
-
         models.sort(Comparator.comparing(ModelDTO::getName));
-
-        for(ModelDTO model : models){
+        for (ModelDTO model : models) {
             System.out.println(model.getName());
         }
-
         return models;
-
     }
-
 }
 
