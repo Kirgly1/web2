@@ -59,7 +59,7 @@
   <tr th:each="user : ${users}">
     <td th:text="${user.username}"></td>
     <td th:text="${user.firstName}"></td>
-    <td th:text="${user.role.getRole()}"></td>
+    <td th:text="${user.userRoleDTO != null ? user.userRoleDTO.getRole() : ''}"></td>
 
     <!-- Добавьте ссылку для каждого бренда -->
 

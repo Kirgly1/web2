@@ -3,7 +3,8 @@ package rutkirgly.web.Controllers;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -19,9 +20,10 @@ import rutkirgly.web.dto.UserDTO;
 import java.text.MessageFormat;
 @Controller
 @RequestMapping("/auth")
-@Slf4j
+
 public class SecurityController {
     private final UserService userService;
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(SecurityController.class);
 
     @Autowired
     public SecurityController(UserService userService) {
@@ -40,13 +42,14 @@ public class SecurityController {
 
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     public void logout(HttpServletRequest request, HttpServletResponse response) {
+        log.info("Logout");
         SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
         securityContextLogoutHandler.logout(request, response, null);
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
-    public String getRegistrationPage(Model model) {
-        System.out.println("niggers!!!!!!!!!");
+    public String getRegistrationPage(@NotNull Model model) {
+        log.info("Registration error");
         model.addAttribute(initUser());
         return "registration";
     }
@@ -56,6 +59,7 @@ public class SecurityController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("user", userDTO);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", bindingResult);
+            log.info("Registration successful.");
             return MessageFormat.format("{0}{1}{2}", "redirect:", "/auth", "/registration");
         }
         try {
@@ -64,6 +68,7 @@ public class SecurityController {
             redirectAttributes.addFlashAttribute("error", "Ошибка! Пользователь уже сущетсвует");
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user",
                     bindingResult);
+            log.info("Registration error, this user does exists!");
             return MessageFormat.format("{0}{1}{2}", "redirect:", "/auth", "/registration");
         }
         return "redirect:/";

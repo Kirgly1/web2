@@ -1,5 +1,7 @@
 package rutkirgly.web.Controllers;
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,10 +18,13 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("/brands")
+@Slf4j
 public class BrandController {
 
     private final BrandService brandService;
     private final ModelService modelService;
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(BrandController.class);
+
 
     @Autowired
     public BrandController(BrandService brandService, ModelService modelService) {
@@ -29,36 +34,41 @@ public class BrandController {
 
     @GetMapping("/{id}")
     public String getBrandById(@PathVariable UUID id, Principal principal, Model model) {
+        log.info("Brand  founded by id");
         BrandDTO brand = brandService.getById(id);
         if (brand != null) {
             model.addAttribute("brand", brand);
             return "brand-details";
         } else {
-            // Если бренд не найден, вернуться к списку брендов
             return "redirect:/brands/all";
         }
     }
 
     @GetMapping("/all")
     public String getAllBrands(Model model, Principal principal) {
+        log.info("Show all Brands");
         List<BrandDTO> brands = brandService.getAll();
         model.addAttribute("brands", brands);
+        log.info("All Brands: ");
         return "brands-list";
     }
 
     @PostMapping("/create")
     public String createBrand(@ModelAttribute Brand brand, Principal principal) {
+        log.info("Brand created");
         brandService.create(brand);
         return "redirect:/brands/all";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteBrand(@PathVariable UUID id, Principal principal) {
+        log.info("User deletes Brand");
         brandService.delete(id);
         return "redirect:/brands/all";
     }
     @GetMapping("/models/{id}")
-    public ModelAndView getAllModelsFromBrand(@PathVariable UUID id) {
+    public ModelAndView getAllModelsFromBrand(@PathVariable UUID id, Principal principal) {
+        log.info("Get models on this brand");
         ModelAndView modelAndView = new ModelAndView("brand-details");
         modelAndView.addObject("models", modelService.getAllByBrandId(id));
         return modelAndView;
