@@ -34,19 +34,6 @@ public class SecurityController {
     public UserDTO initUser() {
         return new UserDTO();
     }
-
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String getLoginPage() {
-        return "login";
-    }
-
-    @RequestMapping(value = "/logout", method = RequestMethod.POST)
-    public void logout(HttpServletRequest request, HttpServletResponse response) {
-        log.info("Logout");
-        SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
-        securityContextLogoutHandler.logout(request, response, null);
-    }
-
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public String getRegistrationPage(@NotNull Model model) {
         log.info("Registration error");
@@ -58,7 +45,7 @@ public class SecurityController {
     public String registerUser(@Valid UserDTO userDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("user", userDTO);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", bindingResult);
+
             log.info("Registration successful.");
             return MessageFormat.format("{0}{1}{2}", "redirect:", "/auth", "/registration");
         }
@@ -73,4 +60,18 @@ public class SecurityController {
         }
         return "redirect:/";
     }
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String getLoginPage() {
+        return "login";
+    }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        log.info("Logout");
+        SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
+        securityContextLogoutHandler.logout(request, response, null);
+    }
+
+
 }
