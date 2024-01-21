@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -34,4 +35,11 @@ public class UserDTO {
     private LocalDateTime created;
     private LocalDateTime modified;
     private UserRoleDTO userRoleDTO;
+    private UUID roleId;
+
+    public UUID getRoleId(){
+        return roleId;
+    }
+
+
 }

@@ -11,9 +11,7 @@ public enum Role {
     USER("USER", Set.of(Permission.USER_WRITE, Permission.USER_WATCH)),
     SELLER("SELLER", Set.of(Permission.SELLER_WRITE, Permission.SELLER_WATCH,
             Permission.USER_WRITE, Permission.USER_WATCH)),
-    ADMIN("ADMIN", Set.of(Permission.ADMIN_WRITE, Permission.ADMIN_WATCH,
-            Permission.SELLER_WRITE, Permission.SELLER_WATCH,
-            Permission.USER_WRITE, Permission.USER_WATCH));
+    ADMIN("ADMIN", Set.of(Permission.ADMIN_WRITE, Permission.ADMIN_WATCH));
 
     final String name;
     final Set<Permission> permissions;
@@ -28,5 +26,13 @@ public enum Role {
         return getPermissions().stream()
                 .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
                 .collect(Collectors.toSet());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Set<Permission> getPermissions() {
+        return permissions;
     }
 }

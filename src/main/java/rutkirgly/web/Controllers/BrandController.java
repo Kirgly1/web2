@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import rutkirgly.web.Services.BrandService;
 import rutkirgly.web.Services.ModelService;
+import rutkirgly.web.Services.OffersService;
 import rutkirgly.web.Tables.Brand;
 import rutkirgly.web.dto.BrandDTO;
 
@@ -23,13 +24,15 @@ public class BrandController {
 
     private final BrandService brandService;
     private final ModelService modelService;
+    private final OffersService offersService;
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(BrandController.class);
 
 
     @Autowired
-    public BrandController(BrandService brandService, ModelService modelService) {
+    public BrandController(BrandService brandService, ModelService modelService, OffersService offersService) {
         this.brandService = brandService;
         this.modelService = modelService;
+        this.offersService = offersService;
     }
 
     @GetMapping("/{id}")
@@ -73,4 +76,5 @@ public class BrandController {
         modelAndView.addObject("models", modelService.getAllByBrandId(id));
         return modelAndView;
     }
+
 }

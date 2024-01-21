@@ -8,4 +8,12 @@ import java.util.UUID;
 public class UserRoleDTO {
     private UUID id;
     private String role;
+    private UUID roleId;
+    public UUID getId() {
+        return id;
+    }
+
+    public UUID getRoleId() {
+        return roleId;
+    }
 }

@@ -53,26 +53,22 @@
     }
 </style>
 <body>
-<h2>Характеристики автомобиля</h2>
-<table border="1">
+<h2>Автомобиль</h2>
+<table>
+    <thead>
     <tr>
-        <th>Тип двигателя</th>
-        <th>Пробег</th>
-        <th>Цена</th>
-        <th>Трансмиссия</th>
-        <th>Год выпуска</th>
-        <th>Описание</th>
+        <th>Название модели</th>
+        <th>Категория</th>
+        <th>Год произв.</th>
     </tr>
-    <tr th:each="offer : ${offers}">
-        <td th:text="${offer.engine}"></td>
-        <td th:text="${offer.mileage}"></td>
-        <td th:text="${offer.price}"></td>
-        <td th:text="${offer.transmission}"></td>
-        <td th:text="${offer.year}"></td>
-        <td>
-            <a th:href="@{'/offers/models/' + ${offer.id}}">Подробнее</a>
-        </td>
+    </thead>
+    <tbody>
+    <tr th:each="model : ${models}">
+        <td th:text="${model.name}"></td>
+        <td th:text="${model.category}"></td>
+        <td th:text="${model.startYear}"></td>
     </tr>
+    </tbody>
 </table>
 </body>
 </html>

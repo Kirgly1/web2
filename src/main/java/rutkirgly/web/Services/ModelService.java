@@ -96,5 +96,13 @@ public class ModelService implements BaseService<ModelDTO, Model> {
         }
         return models;
     }
+    @Cacheable(value = "modelsByOffer", key = "'getModelsByOfferId_' + #offerId")
+    public List<ModelDTO> getModelsByOfferId(UUID offerId) {
+        List<ModelDTO> models = modelRepository.getModelsByOfferId(offerId).stream()
+                .map(mappingUtil::convertToDto)
+                .collect(Collectors.toList());
+        models.sort(Comparator.comparing(ModelDTO::getName));
+        return models;
+    }
 }
 

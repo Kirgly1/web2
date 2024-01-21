@@ -9,6 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import rutkirgly.web.Tables.Abastracts.BaseEx;
+import rutkirgly.web.constants.Role;
+
+import java.util.Set;
 
 @Entity(name = "Users")
 @Getter
@@ -16,6 +19,8 @@ import rutkirgly.web.Tables.Abastracts.BaseEx;
 @NoArgsConstructor
 @Table(name = "Users")
 public class User extends BaseEx {
+
+
     @NotBlank(message = "Username can't be empty")
     @Size(min = 3, max = 24, message = "username can't be less than 3 and can't be more than 24")
     private String username;
@@ -41,4 +46,11 @@ public class User extends BaseEx {
 
     @Pattern(regexp = "^(http|https)://.*\\.(jpg|png|gif|bmp)$", message = "Image URL must be a valid image URL")
     private String imageUrl;
+    public Set<String> getRoles() {
+        return (Set<String>) role;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.role = role;
+    }
 }

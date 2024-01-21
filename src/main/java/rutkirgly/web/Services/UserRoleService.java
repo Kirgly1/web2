@@ -65,6 +65,7 @@ public class UserRoleService implements BaseService<UserRoleDTO, UserRole> {
                 .collect(Collectors.toList());
     }
 
+
     public UserRoleDTO findByRole(Role role) {
         return mappingUtil.convertToDto(userRoleRepository.findUserRoleByRole(role).orElseThrow(() -> new NoSuchElementException("No such role " + role)));
     }

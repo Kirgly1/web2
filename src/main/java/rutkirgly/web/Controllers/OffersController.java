@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import rutkirgly.web.Services.ModelService;
 import rutkirgly.web.Services.OffersService;
 import rutkirgly.web.dto.OffersDTO;
 
@@ -20,10 +22,13 @@ import java.util.UUID;
 public class OffersController {
 
     private final OffersService offersService;
+    private final ModelService modelService;
+
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(OffersController.class);
     @Autowired
-    public OffersController(OffersService offersService) {
+    public OffersController(OffersService offersService, ModelService modelService) {
         this.offersService = offersService;
+        this.modelService = modelService;
     }
 
     @GetMapping("/details")
@@ -52,5 +57,16 @@ public class OffersController {
             return "More than 50000";
         }
     }
-
+    @GetMapping("/models/{id}")
+    public ModelAndView getModelsByOfferId(@PathVariable UUID id, Principal principal) {
+        log.info("Get models for this offer");
+        ModelAndView modelAndView = new ModelAndView("model-details");
+        modelAndView.addObject("models", modelService.getModelsByOfferId(id));
+        return modelAndView;
+    }
+    @GetMapping("/details/{id}")
+    public String getOfferDetails(@PathVariable UUID id, Principal principal, Model model) {
+        log.info("Offer details by id");
+        return "offerDetails";
+    }
 }

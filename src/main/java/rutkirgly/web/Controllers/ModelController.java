@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import rutkirgly.web.Services.BrandService;
 import rutkirgly.web.Services.ModelService;
+import rutkirgly.web.Services.OffersService;
 
 import java.security.Principal;
 import java.util.UUID;
@@ -22,11 +23,13 @@ public class ModelController {
 
     private final BrandService brandService;
     private final ModelService modelService;
+    private final OffersService offerService;
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(ModelController.class);
     @Autowired
-    public ModelController(BrandService brandService, ModelService modelService) {
+    public ModelController(BrandService brandService, ModelService modelService, OffersService offerService) {
         this.brandService = brandService;
         this.modelService = modelService;
+        this.offerService = offerService;
     }
     @GetMapping("/{brandId}/models")
     public ModelAndView getAllByBrand(@PathVariable UUID brandId, Model model, Principal principal) {

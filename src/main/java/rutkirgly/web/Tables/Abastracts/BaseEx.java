@@ -3,12 +3,12 @@ package rutkirgly.web.Tables.Abastracts;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
-import rutkirgly.web.Tables.Abastracts.BaseEntity;
 
 import java.time.LocalDateTime;
 
 @MappedSuperclass
 public abstract class BaseEx extends BaseEntity {
+
     private LocalDateTime created;
     private LocalDateTime modified;
 

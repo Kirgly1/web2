@@ -11,6 +11,7 @@ import rutkirgly.web.Tables.Offers;
 import rutkirgly.web.dto.OffersDTO;
 import rutkirgly.web.util.MappingUtil;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -76,5 +77,16 @@ public class OffersService implements BaseService<OffersDTO, Offers> {
         return offers.stream()
                 .map(mappingUtil::convertToDto)
                 .collect(Collectors.toList());
+    }
+    @Cacheable(value = "offers", key = "'getAllByModelId_' + #modelId")
+    public List<OffersDTO> getAllByModelId(UUID modelId) {
+        List<OffersDTO> offers = offersRepository.findAllByModelId(modelId).stream()
+                .map(mappingUtil::convertToDto)
+                .collect(Collectors.toList());
+        offers.sort(Comparator.comparing(OffersDTO::getPrice));
+        for (OffersDTO offer : offers) {
+            System.out.println("Offer Price: " + offer.getPrice());
+        }
+        return offers;
     }
 }

@@ -3,6 +3,7 @@ package rutkirgly.web.Start;
 import com.github.javafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import rutkirgly.web.Services.BrandService;
 import rutkirgly.web.Services.OffersService;
@@ -37,28 +38,34 @@ public class DataInitializer implements CommandLineRunner {
 
         @Override
         public void run(String... args) throws Exception {
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
             UserRole userRoleUser = new UserRole();
-            userRoleUser.setRole(Role.ADMIN);
+            userRoleUser.setRole(Role.USER);
             userRoleService.create(userRoleUser);
+
             UserRole userRoleAdmin = new UserRole();
-            userRoleAdmin.setRole(Role.USER);
+            userRoleAdmin.setRole(Role.ADMIN);
             userRoleService.create(userRoleAdmin);
 
-            for (int i = 0; i < 100; i++) {
+            User adminUser = new User();
+            adminUser.setUsername("admin");
+            adminUser.setFirstName("Admin");
+            adminUser.setLastName("Adminovich");
+            adminUser.setImageUrl("www.hugo-stamm.info");
+            adminUser.setPassword(passwordEncoder.encode("admin"));
+            adminUser.setRole(userRoleAdmin);
+            adminUser.setIsActive(true);
+            userService.create(adminUser);
+
+            for (int i = 0; i < 99; i++) {
                 User user = new User();
                 user.setUsername(faker.name().username());
                 user.setFirstName(faker.name().firstName());
                 user.setLastName(faker.name().lastName());
                 user.setImageUrl(faker.internet().url());
                 user.setPassword(faker.internet().password());
-                Random random = new Random();
-                boolean choice = random.nextBoolean();
-                if (!(choice)) {
-                    user.setRole(userRoleUser);
-                } else{
-                    user.setRole(userRoleAdmin);
-                }
+                user.setRole(userRoleUser);
                 user.setIsActive(true);
                 userService.create(user);
             }

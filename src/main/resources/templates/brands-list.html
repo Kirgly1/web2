@@ -47,20 +47,16 @@
 <table>
   <thead>
   <tr>
-    <th>ID машины</th>
     <th>Название бренда</th>
-    <th>Детали</th> <!-- Новый столбец для ссылок на детали -->
+    <th>Детали</th>
   </tr>
   </thead>
   <tbody>
   <tr th:each="brand : ${brands}">
-    <td th:text="${brand.id.toString()}"></td>
     <td th:text="${brand.name}"></td>
-    <!-- Добавьте ссылку для каждого бренда -->
     <td><a th:href="@{'/brands/models/' + ${brand.id}}">Подробнее</a></td>
   </tr>
   </tbody>
 </table>
-<!-- Add links or buttons for creating new brands, updating, and deleting -->
 </body>
 </html>

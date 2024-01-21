@@ -1,19 +1,24 @@
 package rutkirgly.web.Services;
 
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import rutkirgly.web.Repositories.UserRepository;
+import rutkirgly.web.Repositories.UserRoleRepository;
 import rutkirgly.web.Tables.User;
+import rutkirgly.web.Tables.UserRole;
 import rutkirgly.web.constants.Role;
 import rutkirgly.web.dto.UserDTO;
 import rutkirgly.web.util.MappingUtil;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -23,8 +28,11 @@ public class UserService implements BaseService<UserDTO, User> {
     private UserRepository userRepository;
     private MappingUtil mappingUtil;
     private PasswordEncoder passwordEncoder;
+    private UserRoleRepository userRoleRepository;
 
     private UserRoleService userRoleService;
+    @Autowired
+    public void setUserRoleRepository(UserRoleRepository userRoleRepository){this.userRoleRepository = userRoleRepository;}
     @Autowired
     public void setUserRoleService(UserRoleService userRoleService) {
         this.userRoleService = userRoleService;
@@ -81,7 +89,7 @@ public class UserService implements BaseService<UserDTO, User> {
 
     public UserDTO registerNewUser(UserDTO userDTO) throws IllegalArgumentException {
         if(userRepository.findAllByUsername(userDTO.getUsername()).isEmpty()) {
-            userDTO.setUserRoleDTO(userRoleService.findByRole(Role.USER));
+            userDTO.setUserRoleDTO(userRoleService.findByRole(Role.ADMIN));
             userDTO.setCreated(LocalDateTime.now());
             userDTO.setIsActive(true);
             userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
@@ -112,4 +120,21 @@ public class UserService implements BaseService<UserDTO, User> {
                 .map(mappingUtil::convertToDto)
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public void updateUserRole(UUID userId, UUID newRoleId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        UserRole role = userRoleRepository.findById(newRoleId)
+                .orElseThrow(() -> new EntityNotFoundException("Role not found"));
+
+
+        user.setRoles(Collections.singleton(role.getRole()));
+
+        userRepository.save(user);
+    }
+
+
+
 }

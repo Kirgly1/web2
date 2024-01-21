@@ -53,6 +53,7 @@
     <th>Название модели</th>
     <th>Категория</th>
     <th>Год произв.</th>
+    <th>Характеристики</th>
   </tr>
   </thead>
   <tbody>
@@ -60,8 +61,12 @@
     <td th:text="${model.name}"></td>
     <td th:text="${model.category}"></td>
     <td th:text="${model.startYear}"></td>
+    <td>
+      <a th:href="@{'/brands/models/' + ${brandId} + '/offers/' + ${model.id}}">
+        <button>Подробнее</button>
+      </a>
+    </td>
 
-    <!-- Добавьте ссылку для каждого бренда -->
 
   </tr>
   </tbody>
